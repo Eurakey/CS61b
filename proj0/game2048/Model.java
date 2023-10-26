@@ -1,5 +1,6 @@
 package game2048;
 
+import javax.swing.text.Position;
 import java.util.Formatter;
 import java.util.Observable;
 
@@ -113,12 +114,59 @@ public class Model extends Observable {
         // TODO: Modify this.board (and perhaps this.score) to account
         // for the tilt to the Side SIDE. If the board changed, set the
         // changed local variable to true.
+        for (int c = 0; c < board.size(); c++){
+            mergeUp(c);
+            changed = true;
+        }
 
         checkGameOver();
         if (changed) {
             setChanged();
         }
         return changed;
+    }
+
+    /** To handle one direction
+     * This is commenda
+     */
+    private void mergeUp(int col){
+        Tile[] tiles = new Tile[4];
+        int size = 0;
+        for (int i = 0; i < board.size(); i++){
+            if (board.tile(col, board.size()- i - 1) != null){
+                tiles[size] = board.tile(col, board.size() - i - 1);
+                size ++;
+            }
+        }
+        if (size == 0){
+            return;
+        }
+        else if (size == 1){
+            board.move(col, 3, tiles[0]);
+        }else if (size ==2){
+            score += mergeTwo(tiles[0], tiles[1], col, 3, false);
+        } else if (size == 3) {
+            score += mergeTwo(tiles[0], tiles[1], col, 3, false);
+            score += mergeTwo(tiles[1], tiles[2], col, 2, true);
+        }else if (size == 4){
+            score += mergeTwo(tiles[0], tiles[1], col, 3, false);
+            score += mergeTwo(tiles[1], tiles[2], col, 2, true);
+            score += mergeTwo(tiles[2], tiles[3], col, 1, true);
+        }
+    }
+
+    private int mergeTwo(Tile tileUp, Tile tileDown, int col, int row , boolean isUpMoved){
+        int result = 0;
+        if (!isUpMoved) board.move(col, row, tileUp);
+        if (tileUp != null && !isUpMoved){
+            if (tileUp.value() == tileDown.value()) result += tileUp.value() * 2;
+        }
+        if (tileUp == null || tileUp.value() == tileDown.value()){
+            board.move(col, row, tileDown);
+        }else {
+            board.move(col, row-1, tileDown);
+        }
+        return result;
     }
 
     /** Checks if the game is over and sets the gameOver variable
@@ -138,6 +186,11 @@ public class Model extends Observable {
      * */
     public static boolean emptySpaceExists(Board b) {
         // TODO: Fill in this function.
+        for (int i = 0; i < b.size(); i++){
+            for (int j = 0; j < b.size(); j++){
+                if (b.tile(i,j) == null) return true;
+            }
+        }
         return false;
     }
 
@@ -148,6 +201,14 @@ public class Model extends Observable {
      */
     public static boolean maxTileExists(Board b) {
         // TODO: Fill in this function.
+        for (int i = 0; i < b.size(); i++){
+            for (int j = 0; j < b.size(); j++){
+                if (b.tile(i,j) != null)
+                {
+                    if (b.tile(i,j).value() == MAX_PIECE) return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -159,7 +220,25 @@ public class Model extends Observable {
      */
     public static boolean atLeastOneMoveExists(Board b) {
         // TODO: Fill in this function.
-        return false;
+        boolean result = false;
+        if (emptySpaceExists(b)) return true;
+        for (int i = 0; i < b.size(); i++){
+            for (int j = 0; j < b.size(); j++){
+                int thisTile = b.tile(i, j).value();
+                int upTile = i - 1 > -1 ? b.tile(i-1, j).value() : -1;
+                int bottomTile = i + 1 < b.size() ? b.tile(i+1, j).value() : -1;
+                int leftTile = j - 1 > -1 ? b.tile(i, j-1).value(): -1;
+                int rightTile = j + 1 < b.size() ? b.tile(i, j+1).value() : -1;
+                if (thisTile == upTile
+                        || thisTile == bottomTile
+                        || thisTile == leftTile
+                        || thisTile == rightTile)
+                {
+                    result = true;
+                }
+            }
+        }
+        return result;
     }
 
 
