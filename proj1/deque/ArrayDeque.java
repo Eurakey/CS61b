@@ -15,7 +15,7 @@ public class ArrayDeque<T> implements Iterable{
         return (index + items.length) % items.length;
     }
     private void resize(int capacity){
-        if (size() == items.length){
+        if (size() == items.length - 1){
             T[] a = (T[]) new Object[capacity];
             for (int i = 0; i < size(); i++){
                 a[i] = items[getPosition(front + i)];
