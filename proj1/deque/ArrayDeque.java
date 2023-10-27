@@ -12,7 +12,7 @@ public class ArrayDeque<T> implements Iterable{
         front = rear = 0;
     }
     private int getPosition(int index){
-        return (index + items.length) % items.length;
+        return (index  + items.length) % items.length;
     }
     private void resize(int capacity){
         if (size() == items.length - 1){
@@ -21,7 +21,7 @@ public class ArrayDeque<T> implements Iterable{
                 a[i] = items[getPosition(front + i)];
             }
             front = 0;
-            rear = size();
+            rear = items.length - 1;
             items = a;
         }
     }

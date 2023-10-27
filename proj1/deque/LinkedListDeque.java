@@ -89,7 +89,7 @@ public class LinkedListDeque<T> implements Iterable {
 
     public boolean equals(Object o){
         if (!(o instanceof LinkedListDeque) || this.size() != ((LinkedListDeque<?>) o).size()) return false;
-        
+
         return true;
     }
     public Iterator<T> iterator(){
