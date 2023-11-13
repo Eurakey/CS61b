@@ -1,13 +1,16 @@
 package deque;
 
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 
-/** Performs some basic linked list tests. */
+/**
+ * Performs some basic linked list tests.
+ */
 public class ArrayDequeTest {
 
-//    public static void main(String[] args){
+    //    public static void main(String[] args){
 //        addIsEmptySizeTest();
 //    }
     @Test
